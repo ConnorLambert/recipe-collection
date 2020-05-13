@@ -2,6 +2,8 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App';
 
+import shallow from 'enzyme';
+
 test('toggleAddRecipeForm() modifies is AddRecipeFormDisplayed state value to toggle visibility of a form on the page', () => {
 
   const appWrapper = shallow(<App />) //Create an App wrapper
@@ -26,7 +28,7 @@ test('The Add Recipe button onClick calls the toggleAddRecipeForm method', () =>
 
   button.simulate('click')
 
-  expect(wrapper.instance().toggleAddRecipeForm).toHaveBeenCalled()
+  expect(appWrapper.instance().toggleAddRecipeForm).toHaveBeenCalled()
 });
 
 test('Submitting the form calls the submitRecipe method', () => {
@@ -57,4 +59,46 @@ test('submitRecipe() modifies the recipes value in state', () => {
   })
   expect(mockPreventDefault).toHaveBeenCalled()
   expect(appWrapper.state().recipes).toEqual([submittedRecipe])
+})
+
+test('Typing into the recipe name input updates state', () => {
+  const appWrapper = shallow(<App />)
+  const recipeName = "No Pockets"
+
+  appWrapper.setState({
+    isAddRecipeFormDisplayed: true
+  })
+
+  appWrapper.find('input[name="newRecipeName"]').simulate("change", {
+    target: { name: 'newRecipeName', value: recipeName}
+  })
+
+  expect(appWrapper.state().newRecipeName).toEqual(recipeName)
+})
+
+test('Typing into the recipe instructions input updates state ', () => {
+  const appWrapper = shallow(<App />)
+  const recipeInstructions = "Kinda hard to write instructions without knowing what I'm cooking"
+
+  appWrapper.setState({
+    isAddRecipeFormDisplayed: true,
+  })
+
+  appWrapper.find('textarea[name="newRecipeInstructions"]').simulate("change", { 
+    target: { name: 'newRecipeInstructions', value: recipeInstructions }
+  })
+
+  expect(appWrapper.state().newRecipeInstructions).toEqual(recipeInstructions)
+})
+
+test('recipe name from recipe in state appears in unordered list', () => {
+  const appWrapper = shallow(<App />)
+  const recipeName = "Lean Pockets"
+  const recipeInstructions = "place in toaster oven on 350 for 45 minutes"
+  const submittedRecipe = { name: recipeName, instructions: recipeInstructions }
+
+  appWrapper.setState({recipe: [submittedRecipe]})
+
+  expect(appWrapper.find('li')).toHaveLength(1)
+  expect(appWrapper.find('li').text()).toEqual("Lean Pockets")
 })
