@@ -31,6 +31,8 @@ class App extends React.Component {
   })
   }
 
+
+
   render() {
     const addNewRecipeForm = (
       <form id="recipe-form" onSubmit={this.submitRecipe}>
@@ -41,6 +43,7 @@ class App extends React.Component {
         <input type="submit" />
       </form>
     )
+
 
     return (
       <div className="App">
@@ -53,7 +56,7 @@ class App extends React.Component {
         {
         this.state.recipes.length > 0 ?
         <ul>
-          <li>{ this.state.recipes[0].name }</li>
+          {<li>{ this.state.recipes[0].name } - {this.state.recipes[0].instructions}</li>}
         </ul> :
         <p>There are no recipes to list.</p>
         }

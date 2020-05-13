@@ -1,8 +1,9 @@
 import React from 'react';
+import {shallow } from 'enzyme';
 import { render } from '@testing-library/react';
 import App from './App';
 
-import shallow from 'enzyme';
+
 
 test('toggleAddRecipeForm() modifies is AddRecipeFormDisplayed state value to toggle visibility of a form on the page', () => {
 
@@ -21,7 +22,7 @@ test('toggleAddRecipeForm() modifies is AddRecipeFormDisplayed state value to to
 
 test('The Add Recipe button onClick calls the toggleAddRecipeForm method', () => {
   const appWrapper = shallow(<App />)
-  appWrapper.instance().toggleAddRecipeForm = js.fn()
+  appWrapper.instance().toggleAddRecipeForm = jest.fn()
   appWrapper.instance().forceUpdate() //forceUpdate() is used bc the wrapper instance that has already been rendered is not using this mock function
   //So React does not automatically detect that the method definition has been changed
   const button = appWrapper.find('#add-recipe')
@@ -91,13 +92,13 @@ test('Typing into the recipe instructions input updates state ', () => {
   expect(appWrapper.state().newRecipeInstructions).toEqual(recipeInstructions)
 })
 
-test('recipe name from recipe in state appears in unordered list', () => {
+test('Recipe name from recipe in state appears in unordered list', () => {
   const appWrapper = shallow(<App />)
   const recipeName = "Lean Pockets"
   const recipeInstructions = "place in toaster oven on 350 for 45 minutes"
   const submittedRecipe = { name: recipeName, instructions: recipeInstructions }
 
-  appWrapper.setState({recipe: [submittedRecipe]})
+  appWrapper.setState({recipes: submittedRecipe})
 
   expect(appWrapper.find('li')).toHaveLength(1)
   expect(appWrapper.find('li').text()).toEqual("Lean Pockets")
