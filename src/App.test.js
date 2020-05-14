@@ -98,8 +98,43 @@ test('Recipe name from recipe in state appears in unordered list', () => {
   const recipeInstructions = "place in toaster oven on 350 for 45 minutes"
   const submittedRecipe = { name: recipeName, instructions: recipeInstructions }
 
-  appWrapper.setState({recipes: submittedRecipe})
+  appWrapper.setState({recipes: [submittedRecipe]})
 
   expect(appWrapper.find('li')).toHaveLength(1)
-  expect(appWrapper.find('li').text()).toEqual("Lean Pockets")
+  expect(appWrapper.find('li').text()).toContain("Lean Pockets")
+})
+
+test('Adding two recipes should update the li length to be 2 instead of 1 and verify the correct entries have been added', () => {
+  const appWrapper = shallow(<App />)
+  const name1 = "Lean Pockets"
+  const instructions1 = "Place in toaster oven, don't burn"
+  const submitted1 = {name: name1, instructions: instructions1}
+  const name2 = "Cereal"
+  const instructions2 = "Pour in ceral, then pour milk in bowl"
+  const submitted2 = {name: name2, instructions: instructions2}
+
+  appWrapper.setState({recipes: [submitted1, submitted2]})
+
+  expect(appWrapper.find('li')).toHaveLength(2)
+  expect(appWrapper.find('ul').text()).toContain('Lean Pockets')
+  expect(appWrapper.find('ul').text()).toContain('Cereal')
+})
+
+test('Submitting two recipes updates state the state', () => {
+  const appWrapper = shallow(<App />)
+  const name1 = "Lean Pockets"
+  const instructions1 = "Place in toaster oven, don't burn"
+  const submitted1 = {name: name1, instructions: instructions1}
+  const name2 = "Cereal"
+  const instructions2 = "Pour in cereal, then pour milk in bowl"
+  const submitted2 = {name: name2, instructions: instructions2}
+
+  appWrapper.setState({recipes: [submitted1, submitted2]})
+
+  //Check for the correct name
+  expect(appWrapper.state().recipes[0].name).toContain("Lean Pockets")
+  expect(appWrapper.state().recipes[1].name).toContain("Cereal")
+  //Check for the correct instructions
+  expect(appWrapper.state().recipes[0].instructions).toContain("Place in toaster oven")
+  expect(appWrapper.state().recipes[1].instructions).toContain("Pour in cereal")
 })
